@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MINA HAPPY WEB | Creative Music Tools</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Noto+Sans+JP:wght@300;500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans JP"', 'sans-serif'],
+                        orbitron: ['"Orbitron"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            dark: '#050505',
+                            cyan: '#06b6d4',
+                            purple: '#9333ea',
+                            pink: '#db2777',
+                        }
+                    },
+                    animation: {
+                        'float': 'float 10s infinite ease-in-out',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translate(0, 0) scale(1)' },
+                            '50%': { transform: 'translate(20px, -20px) scale(1.1)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Base Styles */
+        body {
+            background-color: #050505;
+            color: #ffffff;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+        
+        /* Background Orbs */
+        .bg-gradient-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        /* Card Hover Effects */
+        .app-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .app-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            transition: 0.5s;
+        }
+
+        .app-card:hover::before {
+            left: 100%;
+        }
+        
+        .app-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: rgba(6, 182, 212, 0.5);
+            box-shadow: 0 10px 30px -10px rgba(6, 182, 212, 0.3);
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        .app-card:hover i {
+            transform: scale(1.2) rotate(5deg);
+        }
+
+        /* Text Gradient */
+        .text-gradient {
+            background: linear-gradient(135deg, #22d3ee 0%, #e879f9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Language Switcher */
+        .lang-btn {
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+        .lang-btn.active {
+            background-color: rgba(6, 182, 212, 0.2);
+            color: #22d3ee;
+            font-weight: bold;
+        }
+        .lang-btn:not(.active):hover {
+            color: #22d3ee;
+        }
+
+        /* Mobile Menu */
+        #mobile-menu {
+            transition: transform 0.3s ease-in-out;
+            transform: translateY(-100%);
+        }
+        #mobile-menu.open {
+            transform: translateY(0);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555; 
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-cyan-500 selection:text-white">
+
+    <!-- Background Decoration -->
+    <div class="bg-gradient-orb w-[500px] h-[500px] bg-cyan-600/20 top-[-100px] left-[-100px] animate-float"></div>
+    <div class="bg-gradient-orb w-[400px] h-[400px] bg-purple-600/20 bottom-[-50px] right-[-50px] animate-float" style="animation-delay: -2s;"></div>
+    <div class="bg-gradient-orb w-[300px] h-[300px] bg-pink-600/10 top-[40%] left-[60%] animate-pulse-slow"></div>
+
+    <!-- Header -->
+    <header class="w-full py-4 px-6 md:px-12 flex justify-between items-center border-b border-white/5 backdrop-blur-xl fixed top-0 z-50 bg-black/50">
+        <div class="text-xl md:text-2xl font-bold tracking-wider font-orbitron text-white group cursor-pointer z-50">
+            MINA <span class="text-cyan-400 group-hover:text-pink-400 transition-colors duration-500">HAPPY</span> WEB
+        </div>
+        
+        <!-- Desktop Nav -->
+        <div class="hidden md:flex items-center gap-8">
+            <nav class="flex space-x-8">
+                <a href="#hero" class="text-sm font-medium text-gray-400 hover:text-cyan-400 transition tracking-widest" data-i18n="nav_top">TOP</a>
+                <a href="#products" class="text-sm font-medium text-gray-400 hover:text-cyan-400 transition tracking-widest" data-i18n="nav_apps">APPS</a>
+                <a href="#about" class="text-sm font-medium text-gray-400 hover:text-cyan-400 transition tracking-widest" data-i18n="nav_about">ABOUT</a>
+            </nav>
+            <div class="flex items-center gap-2 border-l border-white/20 pl-6">
+                <button onclick="setLanguage('ja')" class="lang-btn active" id="btn-ja">JP</button>
+                <span class="text-gray-600 text-xs">/</span>
+                <button onclick="setLanguage('en')" class="lang-btn" id="btn-en">EN</button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Button & Lang -->
+        <div class="flex items-center gap-4 md:hidden z-50">
+             <div class="flex items-center gap-1">
+                <button onclick="setLanguage('ja')" class="lang-btn active" id="btn-ja-mobile">JP</button>
+                <span class="text-gray-600 text-xs">/</span>
+                <button onclick="setLanguage('en')" class="lang-btn" id="btn-en-mobile">EN</button>
+            </div>
+            <button id="mobile-menu-btn" class="text-white text-xl p-2">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu" class="fixed inset-0 bg-black/95 z-40 flex flex-col items-center justify-center space-y-8 md:hidden">
+        <a href="#hero" class="text-2xl font-bold text-white hover:text-cyan-400 font-orbitron mobile-link" data-i18n="nav_top">TOP</a>
+        <a href="#products" class="text-2xl font-bold text-white hover:text-cyan-400 font-orbitron mobile-link" data-i18n="nav_apps">APPS</a>
+        <a href="#about" class="text-2xl font-bold text-white hover:text-cyan-400 font-orbitron mobile-link" data-i18n="nav_about">ABOUT</a>
+        <div class="mt-8 pt-8 border-t border-white/10 w-40 text-center">
+            <span class="text-gray-500 text-sm">MINA HAPPY WEB</span>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="hero" class="flex flex-col items-center justify-center min-h-screen pt-20 px-4 text-center relative z-10">
+        <div class="max-w-5xl mx-auto space-y-8">
+            <div class="inline-block px-4 py-1 rounded-full border border-cyan-500/30 bg-cyan-900/10 text-cyan-400 text-xs md:text-sm tracking-[0.2em] font-orbitron mb-4 animate-bounce" data-i18n="hero_badge">
+                WEB COMPANY FOR EVERYONE'S HAPPINESS
+            </div>
+            
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight font-orbitron tracking-tight">
+                CREATE <span class="text-gradient">SOUND</span><br>
+                CREATE <span class="bg-gradient-to-r from-purple-400 to-pink-500 text-transparent bg-clip-text">HAPPINESS</span>
+            </h1>
+            
+            <p class="text-gray-400 text-base md:text-xl max-w-2xl mx-auto leading-relaxed" data-i18n="hero_desc">
+                ブラウザひとつで、誰でもクリエイターに。<br>
+                あなたの音楽制作を加速させる、<br class="md:hidden">無料のWebツールコレクション。
+            </p>
+            
+            <div class="flex flex-col md:flex-row items-center justify-center gap-4 pt-4">
+                <a href="#products" class="group relative px-8 py-4 bg-white text-black rounded-full font-bold text-lg overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_40px_-10px_rgba(255,255,255,0.5)]">
+                    <span class="relative z-10 flex items-center">
+                        <span data-i18n="btn_try">アプリを使ってみる</span>
+                        <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                    </span>
+                </a>
+                <a href="#about" class="px-8 py-4 rounded-full font-bold text-lg border border-white/20 hover:bg-white/10 transition text-white" data-i18n="nav_about">
+                    ABOUT US
+                </a>
+            </div>
+        </div>
+        
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 text-gray-500 text-sm animate-bounce">
+            SCROLL
+            <div class="mt-2 w-[1px] h-12 bg-gradient-to-b from-gray-500 to-transparent mx-auto"></div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="py-24 px-4 md:px-8 max-w-7xl mx-auto relative z-10">
+        
+        <!-- Category 1: Theory & Utility -->
+        <div class="mb-32">
+            <div class="flex items-end gap-4 mb-10 border-b border-white/10 pb-4">
+                <h3 class="text-3xl md:text-4xl font-bold font-orbitron text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500" data-i18n="cat_theory">THEORY & UTILITY</h3>
+                <span class="text-gray-500 font-orbitron text-sm pb-1 hidden md:inline-block">/ MUSIC THEORY TOOLS</span>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- App Card -->
+                <a href="https://16-pad-scale-finder-app.vercel.app/" target="_blank" class="app-card rounded-2xl p-8 group block h-full">
+                    <div class="flex items-start justify-between mb-6">
+                        <div class="w-14 h-14 rounded-xl bg-cyan-900/30 flex items-center justify-center border border-cyan-500/20 group-hover:border-cyan-400 transition-colors">
+                            <i class="fas fa-th text-2xl text-cyan-400 transition-transform duration-300"></i>
+                        </div>
+                        <span class="text-[10px] font-mono text-cyan-300 bg-cyan-900/20 border border-cyan-900 px-2 py-1 rounded">WEB APP</span>
+                    </div>
+                    <h4 class="text-2xl font-bold mb-3 text-white group-hover:text-cyan-300 transition-colors">Pad Scale Finder</h4>
+                    <p class="text-gray-400 text-sm leading-relaxed" data-i18n="desc_pad">16パッドのためのスケールファインダー。MPCやMaschineユーザーに最適な音階ガイドツール。パッドを叩く楽しさを最大化します。</p>
+                </a>
+
+                <!-- App Card -->
+                <a href="https://keyboard-scale-finder-app.vercel.app/" target="_blank" class="app-card rounded-2xl p-8 group block h-full">
+                    <div class="flex items-start justify-between mb-6">
+                        <div class="w-14 h-14 rounded-xl bg-purple-900/30 flex items-center justify-center border border-purple-500/20 group-hover:border-purple-400 transition-colors">
+                            <i class="fas fa-keyboard text-2xl text-purple-400 transition-transform duration-300"></i>
+                        </div>
+                        <span class="text-[10px] font-mono text-purple-300 bg-purple-900/20 border border-purple-900 px-2 py-1 rounded">WEB APP</span>
+                    </div>
+                    <h4 class="text-2xl font-bold mb-3 text-white group-hover:text-purple-300 transition-colors">Keyboard Scale Finder</h4>
+                    <p class="text-gray-400 text-sm leading-relaxed" data-i18n="desc_key">鍵盤奏者向けスケール検索ツール。コード進行やメロディ作成の強力なアシスタント。もう音を外す心配はありません。</p>
+                </a>
+            </div>
+        </div>
+
+        <!-- Category 2: Generators (Featured) -->
+        <div class="mb-32">
+            <div class="flex items-end gap-4 mb-10 border-b border-white/10 pb-4">
+                <h3 class="text-3xl md:text-4xl font-bold font-orbitron text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-rose-500" data-i18n="cat_gen">GENERATORS</h3>
+                <span class="text-gray-500 font-orbitron text-sm pb-1 hidden md:inline-block">/ AI & ALGORITHMIC TOOLS</span>
+            </div>
+
+            <div class="grid grid-cols-1">
+                <!-- App Card (Big Feature) -->
+                <a href="https://bass-generator.vercel.app/" target="_blank" class="app-card rounded-2xl p-8 md:p-12 group block border-pink-500/30 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i class="fas fa-dragon text-9xl text-pink-500"></i>
+                    </div>
+                    
+                    <div class="relative z-10 flex flex-col md:flex-row gap-8 items-start md:items-center">
+                        <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-pink-600 to-rose-600 flex items-center justify-center shadow-lg shadow-pink-600/30 group-hover:scale-110 transition-transform duration-500">
+                            <i class="fas fa-wave-square text-4xl text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <h4 class="text-3xl md:text-4xl font-bold text-white group-hover:text-pink-400 transition-colors font-orbitron">BASS DRAGON GENERATOR</h4>
+                                <span class="bg-pink-600 text-white text-[10px] font-bold px-2 py-1 rounded shadow-lg shadow-pink-500/50 animate-pulse">NEW</span>
+                            </div>
+                            <p class="text-gray-300 text-lg mb-6 max-w-2xl" data-i18n="desc_bass">強烈なベースラインを自動生成。あなたのトラックにドラゴンのようなうなり声を。クリック一つで無限のインスピレーションを。</p>
+                            <span class="inline-flex items-center text-pink-400 font-bold group-hover:translate-x-2 transition-transform">
+                                <span data-i18n="btn_gen">GENERATE NOW</span> <i class="fas fa-chevron-right ml-2 text-xs"></i>
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Category 3: Drum Sequencers -->
+        <div class="mb-20">
+            <div class="flex items-end gap-4 mb-10 border-b border-white/10 pb-4">
+                <h3 class="text-3xl md:text-4xl font-bold font-orbitron text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500" data-i18n="cat_seq">SEQUENCERS</h3>
+                <span class="text-gray-500 font-orbitron text-sm pb-1 hidden md:inline-block">/ GENRE SPECIFIC RHYTHM</span>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Sequencer Items -->
+                <a href="https://dnb-sequencer.vercel.app/" target="_blank" class="app-card rounded-xl p-6 group block">
+                    <div class="flex justify-between items-start mb-4">
+                        <i class="fas fa-drum text-3xl text-yellow-400 transition-transform group-hover:-rotate-12"></i>
+                        <i class="fas fa-external-link-alt text-xs text-gray-600 group-hover:text-white transition"></i>
+                    </div>
+                    <h4 class="text-xl font-bold mb-1 text-gray-100">Drum'n'Bass</h4>
+                    <p class="text-xs text-gray-500 font-mono tracking-wide">HIGH SPEED RHYTHM</p>
+                </a>
+
+                <a href="https://techno-sequencer.vercel.app/" target="_blank" class="app-card rounded-xl p-6 group block">
+                    <div class="flex justify-between items-start mb-4">
+                        <i class="fas fa-compact-disc text-3xl text-blue-400 transition-transform group-hover:rotate-180 duration-700"></i>
+                        <i class="fas fa-external-link-alt text-xs text-gray-600 group-hover:text-white transition"></i>
+                    </div>
+                    <h4 class="text-xl font-bold mb-1 text-gray-100">Techno</h4>
+                    <p class="text-xs text-gray-500 font-mono tracking-wide">INDUSTRIAL BEATS</p>
+                </a>
+
+                <a href="https://dubstep-sequencer-z9j6.vercel.app/" target="_blank" class="app-card rounded-xl p-6 group block">
+                    <div class="flex justify-between items-start mb-4">
+                        <i class="fas fa-bolt text-3xl text-red-500 transition-transform group-hover:scale-110"></i>
+                        <i class="fas fa-external-link-alt text-xs text-gray-600 group-hover:text-white transition"></i>
+                    </div>
+                    <h4 class="text-xl font-bold mb-1 text-gray-100">Dubstep</h4>
+                    <p class="text-xs text-gray-500 font-mono tracking-wide">HEAVY WOBBLE BASS</p>
+                </a>
+
+                <a href="https://edm-sequencer.vercel.app/" target="_blank" class="app-card rounded-xl p-6 group block">
+                    <div class="flex justify-between items-start mb-4">
+                        <i class="fas fa-users text-3xl text-green-400 transition-transform group-hover:-translate-y-1"></i>
+                        <i class="fas fa-external-link-alt text-xs text-gray-600 group-hover:text-white transition"></i>
+                    </div>
+                    <h4 class="text-xl font-bold mb-1 text-gray-100">EDM</h4>
+                    <p class="text-xs text-gray-500 font-mono tracking-wide">MAIN STAGE ANTHEM</p>
+                </a>
+
+                <a href="https://future-bass-sequencer.vercel.app/" target="_blank" class="app-card rounded-xl p-6 group block">
+                    <div class="flex justify-between items-start mb-4">
+                        <i class="fas fa-rocket text-3xl text-purple-400 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1"></i>
+                        <i class="fas fa-external-link-alt text-xs text-gray-600 group-hover:text-white transition"></i>
+                    </div>
+                    <h4 class="text-xl font-bold mb-1 text-gray-100">Future Bass</h4>
+                    <p class="text-xs text-gray-500 font-mono tracking-wide">KAWAII & EMOTIONAL</p>
+                </a>
+
+                <a href="https://hiphop-sequencer.vercel.app/" target="_blank" class="app-card rounded-xl p-6 group block">
+                    <div class="flex justify-between items-start mb-4">
+                        <i class="fas fa-microphone-alt text-3xl text-orange-400 transition-transform group-hover:rotate-12"></i>
+                        <i class="fas fa-external-link-alt text-xs text-gray-600 group-hover:text-white transition"></i>
+                    </div>
+                    <h4 class="text-xl font-bold mb-1 text-gray-100">HipHop</h4>
+                    <p class="text-xs text-gray-500 font-mono tracking-wide">BOOM BAP & TRAP</p>
+                </a>
+
+                <a href="https://psytrance-sequencer.vercel.app/" target="_blank" class="app-card rounded-xl p-6 group block">
+                    <div class="flex justify-between items-start mb-4">
+                        <i class="fas fa-om text-3xl text-indigo-400 transition-transform group-hover:scale-110"></i>
+                        <i class="fas fa-external-link-alt text-xs text-gray-600 group-hover:text-white transition"></i>
+                    </div>
+                    <h4 class="text-xl font-bold mb-1 text-gray-100">Psytrance</h4>
+                    <p class="text-xs text-gray-500 font-mono tracking-wide">TRIPPY RHYTHMS</p>
+                </a>
+
+                <a href="https://house-sequencer.vercel.app/" target="_blank" class="app-card rounded-xl p-6 group block">
+                    <div class="flex justify-between items-start mb-4">
+                        <i class="fas fa-cocktail text-3xl text-pink-400 transition-transform group-hover:-rotate-12"></i>
+                        <i class="fas fa-external-link-alt text-xs text-gray-600 group-hover:text-white transition"></i>
+                    </div>
+                    <h4 class="text-xl font-bold mb-1 text-gray-100">House Groove</h4>
+                    <p class="text-xs text-gray-500 font-mono tracking-wide">CLASSIC 4 ON THE FLOOR</p>
+                </a>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Footer -->
+    <footer id="about" class="bg-black py-16 border-t border-white/10 relative z-10">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-6 font-orbitron tracking-widest text-white">MINA <span class="text-cyan-400">HAPPY</span> WEB</h2>
+            <p class="text-gray-400 mb-10 max-w-lg mx-auto leading-loose" data-i18n="footer_text">
+                Webの力で、世界をもっと楽しく、もっとクリエイティブに。<br>
+                私たちは、音楽とテクノロジーの架け橋となるツールを作り続けます。
+            </p>
+            
+            <div class="flex justify-center gap-8 mb-12">
+                <a href="https://x.com/bboy_aird?s=21" target="_blank" class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-black transition-all duration-300">
+                    <!-- SVGを直接埋め込んで確実に表示 -->
+                    <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
+                    </svg>
+                </a>
+                <a href="https://www.youtube.com/@minahappyweb" target="_blank" class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-red-600 transition-all duration-300">
+                    <i class="fab fa-youtube text-xl"></i>
+                </a>
+                <a href="https://github.com/aird1990" target="_blank" class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 transition-all duration-300">
+                    <i class="fab fa-github text-xl"></i>
+                </a>
+                <a href="https://www.instagram.com/air_d3" target="_blank" class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-pink-600 transition-all duration-300">
+                    <i class="fab fa-instagram text-xl"></i>
+                </a>
+            </div>
+            
+            <div class="text-xs text-gray-600 font-mono uppercase tracking-widest border-t border-white/5 pt-8">
+                &copy; 2026 MINA HAPPY WEB. All Rights Reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive Script -->
+    <script>
+        // Translations Data
+        const translations = {
+            ja: {
+                nav_top: "TOP",
+                nav_apps: "APPS",
+                nav_about: "ABOUT",
+                hero_badge: "WEB COMPANY FOR EVERYONE'S HAPPINESS",
+                hero_desc: "ブラウザひとつで、誰でもクリエイターに。<br>あなたの音楽制作を加速させる、<br class='md:hidden'>無料のWebツールコレクション。",
+                btn_try: "アプリを使ってみる",
+                cat_theory: "THEORY & UTILITY",
+                desc_pad: "16パッドのためのスケールファインダー。MPCやMaschineユーザーに最適な音階ガイドツール。パッドを叩く楽しさを最大化します。",
+                desc_key: "鍵盤奏者向けスケール検索ツール。コード進行やメロディ作成の強力なアシスタント。もう音を外す心配はありません。",
+                cat_gen: "GENERATORS",
+                desc_bass: "強烈なベースラインを自動生成。あなたのトラックにドラゴンのようなうなり声を。クリック一つで無限のインスピレーションを。",
+                btn_gen: "GENERATE NOW",
+                cat_seq: "SEQUENCERS",
+                footer_text: "Webの力で、世界をもっと楽しく、もっとクリエイティブに。<br>私たちは、音楽とテクノロジーの架け橋となるツールを作り続けます。"
+            },
+            en: {
+                nav_top: "TOP",
+                nav_apps: "APPS",
+                nav_about: "ABOUT",
+                hero_badge: "WEB COMPANY FOR EVERYONE'S HAPPINESS",
+                hero_desc: "Become a creator with just a browser.<br>A collection of free web tools to accelerate<br class='md:hidden'>your music production.",
+                btn_try: "TRY APPS",
+                cat_theory: "THEORY & UTILITY",
+                desc_pad: "Scale finder for 16 pads. The perfect tonal guide tool for MPC and Maschine users. Maximize the fun of finger drumming.",
+                desc_key: "Scale search tool for keyboardists. A powerful assistant for chord progressions and melody creation. Never hit a wrong note again.",
+                cat_gen: "GENERATORS",
+                desc_bass: "Automatically generate intense bass lines. Add a dragon-like roar to your tracks. Infinite inspiration with just one click.",
+                btn_gen: "GENERATE NOW",
+                cat_seq: "SEQUENCERS",
+                footer_text: "Making the world more fun and creative through the power of the Web.<br>We build tools that bridge the gap between music and technology."
+            }
+        };
+
+        // Language Switcher Function
+        function setLanguage(lang) {
+            // Update Text
+            const elements = document.querySelectorAll('[data-i18n]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    el.innerHTML = translations[lang][key];
+                }
+            });
+
+            // Update HTML Lang Attribute
+            document.documentElement.lang = lang;
+
+            // Update Buttons (Desktop & Mobile)
+            const btns = {
+                ja: [document.getElementById('btn-ja'), document.getElementById('btn-ja-mobile')],
+                en: [document.getElementById('btn-en'), document.getElementById('btn-en-mobile')]
+            };
+
+            // Reset all
+            [...btns.ja, ...btns.en].forEach(btn => {
+                if(btn) btn.classList.remove('active');
+            });
+
+            // Activate selected
+            btns[lang].forEach(btn => {
+                if(btn) btn.classList.add('active');
+            });
+        }
+
+        // Mobile Menu Logic
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        function toggleMenu() {
+            mobileMenu.classList.toggle('open');
+            const icon = menuBtn.querySelector('i');
+            if (mobileMenu.classList.contains('open')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        }
+
+        menuBtn.addEventListener('click', toggleMenu);
+
+        // Close menu when clicking a link
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', toggleMenu);
+        });
+
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if(targetId === '#') return;
+                
+                const targetElem = document.querySelector(targetId);
+                if(targetElem) {
+                     targetElem.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Simple parallax effect for orbs
+        document.addEventListener('mousemove', (e) => {
+            const orbs = document.querySelectorAll('.bg-gradient-orb');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            orbs.forEach((orb, index) => {
+                const speed = (index + 1) * 20;
+                orb.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
+            });
+        });
+    </script>
+</body>
+</html>
